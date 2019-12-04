@@ -1,0 +1,8 @@
+/MiniJava.interp
+/MiniJava.tokens
+/MiniJavaBaseListener.java
+/MiniJavaLexer.interp
+/MiniJavaLexer.java
+/MiniJavaLexer.tokens
+/MiniJavaListener.java
+/MiniJavaParser.java

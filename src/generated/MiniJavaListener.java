@@ -1,6 +1,5 @@
 package generated;
-// Generated from MiniJava.g4 by ANTLR 4.4
-import org.antlr.v4.runtime.misc.NotNull;
+// Generated from MiniJava.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -9,133 +8,223 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface MiniJavaListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#mainClass}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#translationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void enterMainClass(@NotNull MiniJavaParser.MainClassContext ctx);
+	void enterTranslationUnit(MiniJavaParser.TranslationUnitContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#mainClass}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#translationUnit}.
 	 * @param ctx the parse tree
 	 */
-	void exitMainClass(@NotNull MiniJavaParser.MainClassContext ctx);
+	void exitTranslationUnit(MiniJavaParser.TranslationUnitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#classDecl}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#classDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx);
+	void enterClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#classDecl}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#classDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx);
+	void exitClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#methodDecl}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#classMember}.
 	 * @param ctx the parse tree
 	 */
-	void enterMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx);
+	void enterClassMember(MiniJavaParser.ClassMemberContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#methodDecl}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#classMember}.
 	 * @param ctx the parse tree
 	 */
-	void exitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx);
+	void exitClassMember(MiniJavaParser.ClassMemberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#field}.
+	 * @param ctx the parse tree
+	 */
+	void enterField(MiniJavaParser.FieldContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#field}.
+	 * @param ctx the parse tree
+	 */
+	void exitField(MiniJavaParser.FieldContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#mainMethod}.
+	 * @param ctx the parse tree
+	 */
+	void enterMainMethod(MiniJavaParser.MainMethodContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#mainMethod}.
+	 * @param ctx the parse tree
+	 */
+	void exitMainMethod(MiniJavaParser.MainMethodContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#method}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethod(MiniJavaParser.MethodContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#method}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethod(MiniJavaParser.MethodContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(MiniJavaParser.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(MiniJavaParser.ParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(MiniJavaParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(MiniJavaParser.ParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiniJavaParser#type}.
 	 * @param ctx the parse tree
 	 */
-	void enterType(@NotNull MiniJavaParser.TypeContext ctx);
+	void enterType(MiniJavaParser.TypeContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link MiniJavaParser#type}.
 	 * @param ctx the parse tree
 	 */
-	void exitType(@NotNull MiniJavaParser.TypeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#expList}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpList(@NotNull MiniJavaParser.ExpListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#expList}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpList(@NotNull MiniJavaParser.ExpListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#formalList}.
-	 * @param ctx the parse tree
-	 */
-	void enterFormalList(@NotNull MiniJavaParser.FormalListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#formalList}.
-	 * @param ctx the parse tree
-	 */
-	void exitFormalList(@NotNull MiniJavaParser.FormalListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#compileUnit}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompileUnit(@NotNull MiniJavaParser.CompileUnitContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#compileUnit}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompileUnit(@NotNull MiniJavaParser.CompileUnitContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#formalRest}.
-	 * @param ctx the parse tree
-	 */
-	void enterFormalRest(@NotNull MiniJavaParser.FormalRestContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#formalRest}.
-	 * @param ctx the parse tree
-	 */
-	void exitFormalRest(@NotNull MiniJavaParser.FormalRestContext ctx);
+	void exitType(MiniJavaParser.TypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiniJavaParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(@NotNull MiniJavaParser.StatementContext ctx);
+	void enterStatement(MiniJavaParser.StatementContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link MiniJavaParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(@NotNull MiniJavaParser.StatementContext ctx);
+	void exitStatement(MiniJavaParser.StatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#id}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#block}.
 	 * @param ctx the parse tree
 	 */
-	void enterId(@NotNull MiniJavaParser.IdContext ctx);
+	void enterBlock(MiniJavaParser.BlockContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#id}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#block}.
 	 * @param ctx the parse tree
 	 */
-	void exitId(@NotNull MiniJavaParser.IdContext ctx);
+	void exitBlock(MiniJavaParser.BlockContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#exp}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#ifStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp(@NotNull MiniJavaParser.ExpContext ctx);
+	void enterIfStatement(MiniJavaParser.IfStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#exp}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#ifStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp(@NotNull MiniJavaParser.ExpContext ctx);
+	void exitIfStatement(MiniJavaParser.IfStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#varDecl}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#whileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterVarDecl(@NotNull MiniJavaParser.VarDeclContext ctx);
+	void enterWhileStatement(MiniJavaParser.WhileStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#varDecl}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#whileStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitVarDecl(@NotNull MiniJavaParser.VarDeclContext ctx);
+	void exitWhileStatement(MiniJavaParser.WhileStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MiniJavaParser#expRest}.
+	 * Enter a parse tree produced by {@link MiniJavaParser#emptyStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpRest(@NotNull MiniJavaParser.ExpRestContext ctx);
+	void enterEmptyStatement(MiniJavaParser.EmptyStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MiniJavaParser#expRest}.
+	 * Exit a parse tree produced by {@link MiniJavaParser#emptyStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpRest(@NotNull MiniJavaParser.ExpRestContext ctx);
+	void exitEmptyStatement(MiniJavaParser.EmptyStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#printStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrintStatement(MiniJavaParser.PrintStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#printStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrintStatement(MiniJavaParser.PrintStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#expressionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#expressionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStatement(MiniJavaParser.ReturnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#returnStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStatement(MiniJavaParser.ReturnStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#blockStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockStatement(MiniJavaParser.BlockStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#blockStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockStatement(MiniJavaParser.BlockStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#localVariableDeclarationStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#localVariableDeclarationStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression(MiniJavaParser.ExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression(MiniJavaParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#primaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimaryExpression(MiniJavaParser.PrimaryExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#primaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimaryExpression(MiniJavaParser.PrimaryExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiniJavaParser#expressionList}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionList(MiniJavaParser.ExpressionListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiniJavaParser#expressionList}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionList(MiniJavaParser.ExpressionListContext ctx);
 }

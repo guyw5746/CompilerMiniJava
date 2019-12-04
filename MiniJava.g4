@@ -1,103 +1,153 @@
 grammar MiniJava;
 
-compileUnit
- : mainClass classDecl* EOF
- ;
+translationUnit
+    :   classDeclaration*
+    ;
 
-mainClass
- : 'class' id '{' 'public' 'static' 'void' 'main' '(' 'String' '[]' Identifier ')' '{' statement '}' '}'
- ;
+classDeclaration
+    :   'class' IDENTIFIER '{' classMember* '}'
+    |   'class' IDENTIFIER ('extends' IDENTIFIER) '{' classMember* '}'
+    ;
 
-classDecl
- : 'class' Identifier '{' varDecl* methodDecl* '}'
- | 'class' Identifier 'extends' Identifier '{' varDecl* methodDecl* '}'
- ;
+classMember
+    :   field
+    |   mainMethod
+    |   method
+    ;
 
-varDecl
- : type Identifier ';'
- ;
+field
+    :   'public' type IDENTIFIER ';'
+    ;
 
-methodDecl
- : 'public' type Identifier '(' formalList ')' '{' varDecl* statement* 'return' exp ';' '}'
- ;
+mainMethod
+    :   'public' 'static' 'void' 'main' '(' 'String' '[' ']' IDENTIFIER ')' '{' blockStatement* '}'
+    ;
 
-formalList
- : (type Identifier formalRest*)?
- ;
+method
+    :   'public' type IDENTIFIER '(' ')' '{' blockStatement* '}'
+    |   'public' type IDENTIFIER '(' parameters ')' '{' blockStatement* '}'
+    ;
 
-formalRest
- : ',' type Identifier
- ;
+parameters
+    :   parameter (',' parameter)*
+    ;
+
+parameter
+    :   type IDENTIFIER
+    ;
 
 type
- : 'int' '[]'
- | 'boolean'
- | 'int'
- | Identifier
- ;
+    :   'boolean'
+    |   'int'
+    |   'void'
+    |   IDENTIFIER
+    ;
 
 statement
- : '{' statement* '}'
- | 'if' '(' exp ')' statement 'else' statement
- | 'while' '(' exp ')' statement
- | 'System.out.println' '(' exp ')' ';'
- | Identifier '=' exp ';'
- | Identifier '[' exp ']' '=' exp ';'
- ;
+    :   block
+    |   printStatement
+    |   ifStatement
+    |   whileStatement
+    |   emptyStatement
+    |   expressionStatement
+    |   returnStatement
+    ;
 
-exp
- : exp Operator exp
- | exp '[' exp ']'
- | exp '.' 'length'
- | exp '.' Identifier '(' expList ')'
- | IntegerLiteral
- | 'true'
- | 'false'
- | Identifier
- | 'this'
- | 'new' 'int' '[' exp ']'
- | 'new' Identifier '(' ')'
- | '!' exp
- | '(' exp ')'
- ;
+block
+    :   '{' blockStatement* '}'
+    ;
 
-expList
- : (exp expRest*)?
- ;
+ifStatement
+    :   'if' '(' expression ')' statement
+    |   'if' '(' expression ')' statement ('else' statement)
+    ;
 
-expRest
- : ',' exp
- ;
+whileStatement
+    :   'while' '(' expression ')' statement
+    ;
 
-id
- : Identifier
- ;
+emptyStatement
+    :   ';'
+    ;
 
-IntegerLiteral
- : Digit
- ;
- 
-Identifier
- : Letter+
- ;
+printStatement
+    :   'System' '.' 'out' '.' 'println' '(' expression ')' ';'
+    ;
 
-Digit
- : NonZeroDigit ('0' .. '9')*
- ;
+expressionStatement
+    :   expression ';'
+    ;
 
-fragment NonZeroDigit
- : '1' .. '9'
- ;
+returnStatement
+    :   'return' ';'
+    |   'return' expression ';'
+    ;
 
-Operator
- : '&&'
- | '<'
- | '+'
- | '-'
- | '*'
- ;
+blockStatement
+    :   statement
+    |   localVariableDeclarationStatement
+    ;
 
-fragment Letter
- : 'a' .. 'z'
- | 'A' .. 'Z'
- ;
+localVariableDeclarationStatement
+    :   type IDENTIFIER ';'
+    |   type IDENTIFIER ('=' expression) ';'
+    ;
+
+expression
+    :   primaryExpression
+    |   expression '.' IDENTIFIER '(' ')'
+    |   expression '.' IDENTIFIER '(' expressionList ')'
+    |   expression '.' IDENTIFIER
+    |   'new' IDENTIFIER '(' ')'
+    |   ('-'|'!') expression
+    |   expression ('*' | '/' | '%') expression
+    |   expression ('+' | '-') expression
+    |   expression ('<=' | '>=' | '>' | '<') expression
+    |   expression ('==' | '!=') expression
+    |   expression '&&' expression
+    |   expression '||' expression
+    |   expression '='<assoc=right> expression
+    ;
+
+primaryExpression
+    :   '(' expression ')'
+    |   'this'
+    |   'null'
+    |   'false'
+    |   'true'
+    |   INTEGER
+    |   IDENTIFIER '(' ')'
+    |   IDENTIFIER '(' expressionList ')'
+    |   IDENTIFIER
+    ;
+
+expressionList
+    :   expression (',' expression)*
+    ;
+
+INTEGER
+    :   [1-9] DIGIT*
+    ;
+
+IDENTIFIER
+    :   LETTER (LETTER | DIGIT)*
+    ;
+
+fragment
+LETTER
+	: 'a' .. 'z'
+	| 'A' .. 'Z'
+    ;
+
+fragment
+DIGIT
+    :   [0-9]
+    ;
+WS
+    :   (   ' '
+        |   '\t'
+        |   '\r'
+        |   '\n'
+        )+
+	-> channel(HIDDEN)	 
+    ;
