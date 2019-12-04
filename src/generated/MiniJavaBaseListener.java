@@ -1,7 +1,8 @@
 package generated;
-// Generated from MiniJava.g4 by ANTLR 4.7.2
+// Generated from MiniJava.g4 by ANTLR 4.4
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -16,180 +17,180 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompileUnit(MiniJavaParser.CompileUnitContext ctx) { }
+	@Override public void enterMainClass(@NotNull MiniJavaParser.MainClassContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompileUnit(MiniJavaParser.CompileUnitContext ctx) { }
+	@Override public void exitMainClass(@NotNull MiniJavaParser.MainClassContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMainClass(MiniJavaParser.MainClassContext ctx) { }
+	@Override public void enterClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMainClass(MiniJavaParser.MainClassContext ctx) { }
+	@Override public void exitClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterClassDecl(MiniJavaParser.ClassDeclContext ctx) { }
+	@Override public void enterMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitClassDecl(MiniJavaParser.ClassDeclContext ctx) { }
+	@Override public void exitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVarDecl(MiniJavaParser.VarDeclContext ctx) { }
+	@Override public void enterType(@NotNull MiniJavaParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVarDecl(MiniJavaParser.VarDeclContext ctx) { }
+	@Override public void exitType(@NotNull MiniJavaParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMethodDecl(MiniJavaParser.MethodDeclContext ctx) { }
+	@Override public void enterExpList(@NotNull MiniJavaParser.ExpListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMethodDecl(MiniJavaParser.MethodDeclContext ctx) { }
+	@Override public void exitExpList(@NotNull MiniJavaParser.ExpListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFormalList(MiniJavaParser.FormalListContext ctx) { }
+	@Override public void enterFormalList(@NotNull MiniJavaParser.FormalListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFormalList(MiniJavaParser.FormalListContext ctx) { }
+	@Override public void exitFormalList(@NotNull MiniJavaParser.FormalListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFormalRest(MiniJavaParser.FormalRestContext ctx) { }
+	@Override public void enterCompileUnit(@NotNull MiniJavaParser.CompileUnitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFormalRest(MiniJavaParser.FormalRestContext ctx) { }
+	@Override public void exitCompileUnit(@NotNull MiniJavaParser.CompileUnitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterType(MiniJavaParser.TypeContext ctx) { }
+	@Override public void enterFormalRest(@NotNull MiniJavaParser.FormalRestContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitType(MiniJavaParser.TypeContext ctx) { }
+	@Override public void exitFormalRest(@NotNull MiniJavaParser.FormalRestContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(MiniJavaParser.StatementContext ctx) { }
+	@Override public void enterStatement(@NotNull MiniJavaParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatement(MiniJavaParser.StatementContext ctx) { }
+	@Override public void exitStatement(@NotNull MiniJavaParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp(MiniJavaParser.ExpContext ctx) { }
+	@Override public void enterId(@NotNull MiniJavaParser.IdContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp(MiniJavaParser.ExpContext ctx) { }
+	@Override public void exitId(@NotNull MiniJavaParser.IdContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpList(MiniJavaParser.ExpListContext ctx) { }
+	@Override public void enterExp(@NotNull MiniJavaParser.ExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpList(MiniJavaParser.ExpListContext ctx) { }
+	@Override public void exitExp(@NotNull MiniJavaParser.ExpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpRest(MiniJavaParser.ExpRestContext ctx) { }
+	@Override public void enterVarDecl(@NotNull MiniJavaParser.VarDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpRest(MiniJavaParser.ExpRestContext ctx) { }
+	@Override public void exitVarDecl(@NotNull MiniJavaParser.VarDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterId(MiniJavaParser.IdContext ctx) { }
+	@Override public void enterExpRest(@NotNull MiniJavaParser.ExpRestContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitId(MiniJavaParser.IdContext ctx) { }
+	@Override public void exitExpRest(@NotNull MiniJavaParser.ExpRestContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEveryRule(ParserRuleContext ctx) { }
+	@Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEveryRule(ParserRuleContext ctx) { }
+	@Override public void exitEveryRule(@NotNull ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitTerminal(TerminalNode node) { }
+	@Override public void visitTerminal(@NotNull TerminalNode node) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void visitErrorNode(ErrorNode node) { }
+	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
 }
