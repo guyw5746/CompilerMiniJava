@@ -6,7 +6,6 @@ translationUnit
 
 classDeclaration
     :   'class' IDENTIFIER '{' classMember* '}'
-    |   'class' IDENTIFIER ('extends' IDENTIFIER) '{' classMember* '}'
     ;
 
 classMember
