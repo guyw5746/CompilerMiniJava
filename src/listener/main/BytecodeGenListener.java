@@ -11,6 +11,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import generated.MiniJavaBaseListener;
 import generated.MiniJavaParser;
+import generated.MiniJavaParser.ParametersContext;
+import listener.main.SymbolTable.Type;
 import generated.*;
 
 public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTreeListener {
@@ -35,11 +37,24 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	
 	public void exitField(MiniJavaParser.FieldContext ctx) { }
 	
-	public void enterMainMethod(MiniJavaParser.MainMethodContext ctx) { }
+	public void enterMainMethod(MiniJavaParser.MainMethodContext ctx) {
+		symbolTable.initFunDecl();
+
+		symbolTable.putLocalVar("args", Type.INTARRAY);
+	}
 	
 	public void exitMainMethod(MiniJavaParser.MainMethodContext ctx) { }
 	
-	public void enterMethod(MiniJavaParser.MethodContext ctx) { }
+	public void enterMethod(MiniJavaParser.MethodContext ctx) {
+		symbolTable.initFunDecl();
+
+		ParametersContext params;
+
+		symbolTable.putFunSpecStr(ctx);
+		params = (MiniJavaParser.ParametersContext) ctx.getChild(4);
+		symbolTable.putParams(params);
+
+	}
 	
 	public void exitMethod(MiniJavaParser.MethodContext ctx) { }
 	
