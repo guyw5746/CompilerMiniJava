@@ -115,6 +115,23 @@ public class SymbolTable {
 		}
 	}
 
+	// 인자 값의 타입이 String일 때 실행.
+	// 함수 이름을 키 값으로 해서 _fsymtable안의 값을 불러오는 함수.
+	public String getFunSpecStr(String fname) {
+		FInfo value = _fsymtable.get(fname);
+		String s = "";
+		s = value.sigStr;
+		// <Fill here>
+		return s;
+	}
+
+	// 인자 값의 타입이 Fun_declContext일 때 실행.
+	// fname + "(" + param + ")" 형태 이므로 첫번째 것을 가져와서 반환.
+	public String getFunSpecStr(MethodContext ctx) {
+		return ctx.getChild(0).getText();
+		// <Fill here>
+	}
+
 	public String putFunSpecStr(MainMethodContext ctx) {
 		String fname = getFunName(ctx);
 		String argtype = "";
