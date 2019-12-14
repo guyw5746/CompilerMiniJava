@@ -449,14 +449,8 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	private String handleFunCall(MiniJavaParser.PrimaryExpressionContext ctx, String expr) {
 		String fname = getFunName(ctx);
 
-		/*
-		 * if (fname.equals("_print")) { // System.out.println expr =
-		 * "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n" +
-		 * newTexts.get(ctx.args()) + "invokevirtual " +
-		 * symbolTable.getFunSpecStr("_print") + "\n"; } else
-		 */
-		expr = newTexts.get(ctx.expression()) + "invokestatic " + symbolTable.getclassname() + "/"
-				+ symbolTable.getFunSpecStr(fname) + "\n";
+		expr += newTexts.get(ctx.expressionList());
+		expr = "invokestatic " + symbolTable.getclassname() + "/" + symbolTable.getFunSpecStr(fname) + "\n";
 
 		return expr;
 
@@ -465,17 +459,8 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	private String handleFunCall(MiniJavaParser.ExpressionContext ctx, String expr) {
 		String fname = getFunName(ctx);
 
-		/*
-		 * if (fname.equals("_print")) { // System.out.println expr =
-		 * "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n" +
-		 * newTexts.get(ctx.args()) + "invokevirtual " +
-		 * symbolTable.getFunSpecStr("_print") + "\n"; } else
-		 */
-		if (ctx.getChildCount() == 5) {
+		if (ctx.getChildCount() >= 5) {
 			expr = "invokestatic " + symbolTable.getclassname() + "/" + symbolTable.getFunSpecStr(fname) + "\n";
-		} else if (ctx.getChildCount() == 6) {
-			expr = newTexts.get(ctx.expression()) + "invokestatic " + symbolTable.getclassname() + "/"
-					+ symbolTable.getFunSpecStr(fname) + "\n";
 		}
 		return expr;
 
@@ -490,7 +475,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	 */
 	public void exitPrimaryExpression(MiniJavaParser.PrimaryExpressionContext ctx) {
 		String s = "";
-		String idName = ctx.IDENTIFIER().getText();
 
 		if (ctx.getChildCount() == 1) {
 			if (ctx.getChild(0).getText().equals("true")) {
@@ -505,17 +489,16 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 				String literalStr = ctx.INTEGER().getText();
 				s += "ldc " + literalStr + " \n";
 			} else {
-				s += "iload_" + symbolTable.getVarId(idName) + " \n";
+				s += "iload_" + symbolTable.getVarId(ctx.IDENTIFIER().getText()) + " \n";
 			}
 		} else if (ctx.getChildCount() == 3) {
 			if (ctx.getChild(0).getText().equals("(")) {
-				s += handleFunCall(ctx, s); // "(" + ctx.expression() + ")";
+				s += handleFunCall(ctx, s);
 			} else {
 				s += ctx.IDENTIFIER() + "( )";
 			}
 		} else {
 			s += handleFunCall(ctx, s);
-			// s += ctx.IDENTIFIER() + "(" + ctx.expressionList() + ")";
 		}
 
 		newTexts.put(ctx, s);
@@ -530,13 +513,13 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void exitExpressionList(MiniJavaParser.ExpressionListContext ctx) {
 		String s = "";
 
+		int count = 0;
 		if (ctx.getChildCount() >= 1) {
 			for (int i = 0; i < ctx.getChildCount(); i++) {
-				if (ctx.getChild(i).getText().equals(",")) {
-					continue;
+				if (isExpressionstatement(ctx, i)) {
+					s += newTexts.get(ctx.expression(count));
+					count++;
 				}
-
-				s += ctx.getChild(i).getText();
 			}
 		}
 		newTexts.put(ctx, s);
