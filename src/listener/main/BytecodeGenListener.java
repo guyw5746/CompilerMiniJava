@@ -432,19 +432,26 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void exitExpression(MiniJavaParser.ExpressionContext ctx) {
-		      String expr = "";
-		      // expressionStatement에서 처리한 것을 newTexts에 추가.
-		      if (ctx.primaryExpression() != null) // expressionStatement
-		         expr = newTexts.get(ctx.primaryExpression());
-		      else if (ctx.getChild(1).getText().equals(".")) {
-		         handleFunCall(ctx, expr);
-		      } else if () {
-		         
-		      }
+		String expr = "";
+		// expressionStatement에서 처리한 것을 newTexts에 추가.
+		if (ctx.primaryExpression() != null) // expressionStatement
+			expr = newTexts.get(ctx.primaryExpression());
+		else if (ctx.getChild(1).getText().equals(".")) {
+			handleFunCall(ctx, expr);
+		} else if (ctx.getChildCount() == 2) { // UnaryOperation
+			expr = handleUnaryExpr(ctx, newTexts.get(ctx) + expr);
+		} else if (ctx.getChildCount() == 3) {
+			if (ctx.getChild(1).getText().equals("=")) { // IDENT '=' expr
+				expr = "istore_" + symbolTable.getVarId(ctx.getChild(0).getText()) + " \n"
+						+ newTexts.get(ctx.expression(0));
+			} else { // binary operation
+				expr = handleBinExpr(ctx, expr);
+			}
+		}
 
-		      newTexts.put(ctx, expr);
+		newTexts.put(ctx, expr);
 
-		   }
+	}
 
 	private String handleFunCall(MiniJavaParser.PrimaryExpressionContext ctx, String expr) {
 		String fname = getFunName(ctx);
