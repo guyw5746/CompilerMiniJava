@@ -1,7 +1,7 @@
 grammar MiniJava;
 
 translationUnit
-    :   classDeclaration*
+    :   classDeclaration+
     ;
 
 classDeclaration
@@ -38,8 +38,7 @@ parameter
     ;
 
 type
-    :   'boolean'
-    |   'int'
+    :	'int'
     |   'void'
     |   IDENTIFIER
     ;

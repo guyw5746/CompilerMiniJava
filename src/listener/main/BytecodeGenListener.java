@@ -1,11 +1,8 @@
 package listener.main;
 
 import static listener.main.BytecodeGenListenerHelper.*;
-import static listener.main.SymbolTable.*;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -31,7 +28,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		}
 
 		newTexts.put(ctx, classdeclaration);
-
 		System.out.println(newTexts.get(ctx));
 	}
 
@@ -43,17 +39,25 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String classProlog = getFunProlog();
 		String decl = "";
 		String s = "";
+		String main = "", method = "";
 
 		if (ctx.getChildCount() >= 4) {
 
 			decl += ".class public " + ctx.getChild(1).getText();
 			s += classProlog;
-			for (int j = 3; j < ctx.getChildCount() - 1; j++) {
-				s += newTexts.get(ctx.classMember(j));
+			int count = 0;
+			for (int i = 0; i < ctx.getChildCount(); i++) {
+				if (isMain(ctx, i)) {
+					main += newTexts.get(ctx.classMember(count));
+					count++;
+				} else if (isMethod(ctx, i)) {
+					method += newTexts.get(ctx.classMember(count));
+					count++;
+				}
 			}
 
 		}
-		newTexts.put(ctx, decl + s);
+		newTexts.put(ctx, decl + s + method + main);
 	}
 
 	public void enterClassMember(MiniJavaParser.ClassMemberContext ctx) {
@@ -100,10 +104,16 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String main = "";
 		String fname = getFunName(ctx);
 
-		if (ctx.getChildCount() >= 12) {
-			main += funcHeader(ctx, fname);
-		}
+		main += funcHeader(ctx, fname);
 
+		int count = 0;
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (isblockstatement(ctx, i)) {
+				main += newTexts.get(ctx.blockStatement(count));
+				count++;
+			}
+		}
+		main += "return \n.end method";
 		newTexts.put(ctx, main);
 	}
 
@@ -115,7 +125,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		symbolTable.putFunSpecStr(ctx);
 		params = (MiniJavaParser.ParametersContext) ctx.getChild(4);
 		symbolTable.putParams(params);
-
 	}
 
 	public void exitMethod(MiniJavaParser.MethodContext ctx) {
@@ -124,7 +133,13 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 		s += funcHeader(ctx, fname);
 
-		s += newTexts.get(ctx.blockStatement(0));
+		int count = 0;
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (isblockstatement(ctx, i)) {
+				s += newTexts.get(ctx.blockStatement(count));
+				count++;
+			}
+		}
 
 		newTexts.put(ctx, s);
 
@@ -148,6 +163,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 	// 생략
 	public void exitParameters(MiniJavaParser.ParametersContext ctx) {
+
 	}
 
 	public void enterParameter(MiniJavaParser.ParameterContext ctx) {
@@ -208,19 +224,19 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void exitIfStatement(MiniJavaParser.IfStatementContext ctx) {
+		// 구현
 	}
 
 	public void enterWhileStatement(MiniJavaParser.WhileStatementContext ctx) {
 	}
 
 	public void exitWhileStatement(MiniJavaParser.WhileStatementContext ctx) {
+		// 구현
 	}
 
-	////////////////////////////////////////////////////
 	public void enterEmptyStatement(MiniJavaParser.EmptyStatementContext ctx) {
 	}
 
-	/////////////////////////////////////////////////////
 	public void exitEmptyStatement(MiniJavaParser.EmptyStatementContext ctx) {
 	}
 
@@ -229,8 +245,12 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 	public void exitPrintStatement(MiniJavaParser.PrintStatementContext ctx) {
 		String print = "";
+
+		print += "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n"
+				+ newTexts.get(ctx.expression().primaryExpression().expressionList());
+
 		if (ctx.getChildCount() >= 8) {
-			print += symbolTable.getFunSpecStr("_print");
+			print += "invokevirtual " + symbolTable.getFunSpecStr("_print") + "\n";
 		}
 
 		newTexts.put(ctx, print);
@@ -242,11 +262,14 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void exitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx) {
 		String stmt = "";
 		// expressionStatement에서 처리한 것을 newTexts에 추가.
+		for (int i = 1; i < ctx.getChild(0).getChildCount(); i++) {
+			if (isExpressionstatement(ctx, i)) {
+				stmt += newTexts.get(ctx.expression().getChild(i));
+			}
+		}
 		if (ctx.expression() != null) // expressionStatement
-			stmt += newTexts.get(ctx.expression()) + ";";
-
+			stmt += newTexts.get(ctx.expression());
 		newTexts.put(ctx, stmt);
-
 	}
 
 	private String handleUnaryExpr(MiniJavaParser.ExpressionContext ctx, String expr) {
@@ -310,14 +333,12 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		case "<=":
 			expr += "isub " + "\n" + "ifle " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
-			// <(5) Fill here>
 			break;
 		// 보다 작을 때 수행. 보다 작을 때를 판별하는 iflt를 사용.
 		// iflt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
 		case "<":
 			expr += "isub " + "\n" + "iflt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
-			// <(6) Fill here>
 			break;
 		// 크거나 같을 때 수행. 크거나 같을 때를 판별하는 ifge를 사용.
 		// ifge를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
@@ -331,7 +352,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		case ">":
 			expr += "isub " + "\n" + "ifgt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
-			// <(8) Fill here>
 			break;
 
 		case "and":
@@ -340,7 +360,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		// 하나라도 참이면 참을 반환하는 or을 수행.
 		case "or":
 			expr += "ifeq" + lend + "\n" + "pop" + "\n" + "ldc 0" + "\n" + lend + ": " + "\n";
-			// <(9) Fill here>
 			break;
 
 		}
@@ -355,10 +374,10 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 		String fname = ctx.getChild(1).getText();
 
-		if (symbolTable.getVarType(fname) == Type.BOOLEAN) {
-			stmt += "areturn" + "\n.end method\n";
-		} else if (symbolTable.getVarType(fname) == Type.INT) {
+		if (symbolTable.getVarType(fname) == Type.INT) {
 			stmt += "ireturn" + "\n.end method\n";
+		} else if (fname instanceof String) {
+			stmt += "ldc " + fname + "\nireturn" + "\n.end method\n";
 		} else {
 			stmt += "return" + "\n.end method\n";
 		}
@@ -387,19 +406,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 	public void enterLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx) {
 		if (isDeclWithInit(ctx)) {
-			if (ctx.getChild(0).getText().equals("int")) {
-				symbolTable.putLocalVarWithInitVal(getLocalVarName(ctx), Type.INT, initVal(ctx));
-			}
-			if (ctx.getChild(0).getText().equals("boolean")) {
-				symbolTable.putLocalVarWithInitVal(getLocalVarName(ctx), Type.BOOLEAN, initbool(ctx));
-			}
+			symbolTable.putLocalVarWithInitVal(getLocalVarName(ctx), Type.INT, initVal(ctx));
 		} else {
-			if (ctx.getChild(0).getText().equals("int")) {
-				symbolTable.putLocalVar(getLocalVarName(ctx), Type.INT);
-			}
-			if (ctx.getChild(0).getText().equals("boolean")) {
-				symbolTable.putLocalVar(getLocalVarName(ctx), Type.BOOLEAN);
-			}
+			symbolTable.putLocalVar(getLocalVarName(ctx), Type.INT);
 		}
 	}
 
@@ -414,14 +423,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 			if (ctx.getChild(0).getText().equals("int")) {
 				varDecl += "ldc " + ctx.getChild(3).getText() + "\n" + "istore_" + vId + "\n";
 			}
-			if (ctx.getChild(0).getText().equals("boolean")) {
-				if (ctx.getChild(3).getText().equals("true")) {
-					varDecl += "iconst_1\n istore_" + vId + "\n";
-				} else {
-					varDecl += "iconst_0\n istore_" + vId + "\n";
-				}
-			}
-
 		}
 
 		newTexts.put(ctx, varDecl);
