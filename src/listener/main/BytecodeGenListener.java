@@ -235,137 +235,117 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 		newTexts.put(ctx, print);
 	}
+
 	public void enterExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx) {
 	}
 
 	public void exitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx) {
+		String stmt = "";
+		// expressionStatement에서 처리한 것을 newTexts에 추가.
+		if (ctx.expression() != null) // expressionStatement
+			stmt += newTexts.get(ctx.expression()) + ";";
+
+		newTexts.put(ctx, stmt);
+
 	}
-	
+
 	private String handleUnaryExpr(MiniJavaParser.ExpressionContext ctx, String expr) {
 		String l1 = symbolTable.newLabel();
 		String l2 = symbolTable.newLabel();
 		String lend = symbolTable.newLabel();
-		
+
 		expr += newTexts.get(ctx.expression(0));
-		switch(ctx.getChild(0).getText()) {
+		switch (ctx.getChild(0).getText()) {
 		case "-":
-			expr += "           ineg \n"; break;
+			expr += "           ineg \n";
+			break;
 		case "--":
-			expr += "ldc 1" + "\n"
-					+ "isub" + "\n";
+			expr += "ldc 1" + "\n" + "isub" + "\n";
 			break;
 		case "++":
-			expr += "ldc 1" + "\n"
-					+ "iadd" + "\n";
+			expr += "ldc 1" + "\n" + "iadd" + "\n";
 			break;
 		case "!":
-			expr += "ifeq " + l2 + "\n"
-					+ l1 + ": " + "ldc 0" + "\n"
-					+ "goto " + lend + "\n"
-					+ l2 + ": " + "ldc 1" + "\n"
-					+ lend + ": " + "\n";
+			expr += "ifeq " + l2 + "\n" + l1 + ": " + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
 			break;
 		}
 		return expr;
 	}
-
 
 	private String handleBinExpr(MiniJavaParser.ExpressionContext ctx, String expr) {
 		String l2 = symbolTable.newLabel();
 		String lend = symbolTable.newLabel();
-		
+
 		expr += newTexts.get(ctx.expression(0));
 		expr += newTexts.get(ctx.expression(1));
-		
-		switch (ctx.getChild(1).getText()) {
-			case "*":
-				expr += "imul \n"; break;
-			case "/":
-				expr += "idiv \n"; break;
-			case "%":
-				expr += "irem \n"; break;
-			case "+":		// expr(0) expr(1) iadd
-				expr += "iadd \n"; break;
-			case "-":
-				expr += "isub \n"; break;
-				
-			case "==":
-				expr += "isub " + "\n"
-						+ "ifeq " + l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				break;
-			case "!=":
-				expr += "isub " + "\n"
-						+ "ifne "+ l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				break;
-			// 작거나 같을 때 수행. 작거나 같을 때를 판별하는 ifle를 사용.
-			// ifle를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
-			case "<=":
-				expr += "isub " + "\n"
-						+ "ifle " + l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				// <(5) Fill here>
-				break;
-			// 보다 작을 때 수행. 보다 작을 때를 판별하는 iflt를 사용.
-			// iflt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
-			case "<":
-				expr += "isub " + "\n"
-						+ "iflt "+ l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				// <(6) Fill here>
-				break;
-				// 크거나 같을 때 수행. 크거나 같을 때를 판별하는 ifge를 사용.
-				// ifge를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
-			case ">=":
-				expr += "isub " + "\n"
-						+ "ifge "+ l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				// <(7) Fill here>
-				break;
-			// 보다 클 때 수행. 보다 클 때를 판별하는 ifgt를 사용.
-			// ifgt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
-			case ">":
-				expr += "isub " + "\n"
-						+ "ifgt "+ l2 + "\n"
-						+ "ldc 0" + "\n"
-						+ "goto " + lend + "\n"
-						+ l2 + ": " + "ldc 1" + "\n"
-						+ lend + ": " + "\n";
-				// <(8) Fill here>
-				break;
 
-			case "and":
-				expr +=  "ifne "+ lend + "\n"
-						+ "pop" + "\n" + "ldc 0" + "\n"
-						+ lend + ": " + "\n"; break;
-			// 하나라도 참이면 참을 반환하는 or을 수행.
-			case "or":
-				expr += "ifeq" + lend + "\n"
-						+ "pop" + "\n" + "ldc 0" + "\n" 
-						+ lend + ": " + "\n";
-				// <(9) Fill here>
-				break;
+		switch (ctx.getChild(1).getText()) {
+		case "*":
+			expr += "imul \n";
+			break;
+		case "/":
+			expr += "idiv \n";
+			break;
+		case "%":
+			expr += "irem \n";
+			break;
+		case "+": // expr(0) expr(1) iadd
+			expr += "iadd \n";
+			break;
+		case "-":
+			expr += "isub \n";
+			break;
+
+		case "==":
+			expr += "isub " + "\n" + "ifeq " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			break;
+		case "!=":
+			expr += "isub " + "\n" + "ifne " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			break;
+		// 작거나 같을 때 수행. 작거나 같을 때를 판별하는 ifle를 사용.
+		// ifle를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
+		case "<=":
+			expr += "isub " + "\n" + "ifle " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			// <(5) Fill here>
+			break;
+		// 보다 작을 때 수행. 보다 작을 때를 판별하는 iflt를 사용.
+		// iflt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
+		case "<":
+			expr += "isub " + "\n" + "iflt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			// <(6) Fill here>
+			break;
+		// 크거나 같을 때 수행. 크거나 같을 때를 판별하는 ifge를 사용.
+		// ifge를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
+		case ">=":
+			expr += "isub " + "\n" + "ifge " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			// <(7) Fill here>
+			break;
+		// 보다 클 때 수행. 보다 클 때를 판별하는 ifgt를 사용.
+		// ifgt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
+		case ">":
+			expr += "isub " + "\n" + "ifgt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+					+ "\n" + lend + ": " + "\n";
+			// <(8) Fill here>
+			break;
+
+		case "and":
+			expr += "ifne " + lend + "\n" + "pop" + "\n" + "ldc 0" + "\n" + lend + ": " + "\n";
+			break;
+		// 하나라도 참이면 참을 반환하는 or을 수행.
+		case "or":
+			expr += "ifeq" + lend + "\n" + "pop" + "\n" + "ldc 0" + "\n" + lend + ": " + "\n";
+			// <(9) Fill here>
+			break;
 
 		}
 		return expr;
 	}
-	
 
 	public void enterReturnStatement(MiniJavaParser.ReturnStatementContext ctx) {
 	}
@@ -374,8 +354,8 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String stmt = "";
 
 		String fname = ctx.getChild(1).getText();
-		
-		if(symbolTable.getVarType(fname) == Type.BOOLEAN) {
+
+		if (symbolTable.getVarType(fname) == Type.BOOLEAN) {
 			stmt += "areturn" + "\n.end method\n";
 		} else if (symbolTable.getVarType(fname) == Type.INT) {
 			stmt += "ireturn" + "\n.end method\n";
@@ -390,9 +370,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterBlockStatement(MiniJavaParser.BlockStatementContext ctx) {
 	}
 
-	/*
-	 * block : '{' blockStatement* '}' ;
-	 */
 	public void exitBlockStatement(MiniJavaParser.BlockStatementContext ctx) {
 		String block = "";
 
@@ -405,10 +382,8 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 				block += newTexts.get(ctx.localVariableDeclarationStatement());
 		}
 		newTexts.put(ctx, block);
-		
-		
-	}
 
+	}
 
 	public void enterLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx) {
 		if (isDeclWithInit(ctx)) {
@@ -428,99 +403,139 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		}
 	}
 
-	/*
-	 * localVariableDeclarationStatement : type IDENTIFIER ';' | type IDENTIFIER
-	 * ('=' expression) ';' ;
-	 */
 	public void exitLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx) {
 
 		String varDecl = "";
-		
+
 		if (isDeclWithInit(ctx)) {
-			//symbolTable.putLocalVarWithInitVal(getLocalVarName(ctx), Type.INT, initVal(ctx));
+			// symbolTable.putLocalVarWithInitVal(getLocalVarName(ctx), Type.INT,
+			// initVal(ctx));
 			String vId = symbolTable.getVarId(ctx);
 			if (ctx.getChild(0).getText().equals("int")) {
-				varDecl += "ldc " + ctx.getChild(3).getText() + "\n"
-						+ "istore_" + vId + "\n"; 
+				varDecl += "ldc " + ctx.getChild(3).getText() + "\n" + "istore_" + vId + "\n";
 			}
 			if (ctx.getChild(0).getText().equals("boolean")) {
-				if(ctx.getChild(3).getText().equals("true")) {
+				if (ctx.getChild(3).getText().equals("true")) {
 					varDecl += "iconst_1\n istore_" + vId + "\n";
 				} else {
 					varDecl += "iconst_0\n istore_" + vId + "\n";
 				}
 			}
-						
+
 		}
-		
+
 		newTexts.put(ctx, varDecl);
-		
+
 	}
 
 	public void enterExpression(MiniJavaParser.ExpressionContext ctx) {
 	}
 
 	public void exitExpression(MiniJavaParser.ExpressionContext ctx) {
+		      String expr = "";
+		      // expressionStatement에서 처리한 것을 newTexts에 추가.
+		      if (ctx.primaryExpression() != null) // expressionStatement
+		         expr = newTexts.get(ctx.primaryExpression());
+		      else if (ctx.getChild(1).getText().equals(".")) {
+		         handleFunCall(ctx, expr);
+		      } else if () {
+		         
+		      }
+
+		      newTexts.put(ctx, expr);
+
+		   }
+
+	private String handleFunCall(MiniJavaParser.PrimaryExpressionContext ctx, String expr) {
+		String fname = getFunName(ctx);
+
+		/*
+		 * if (fname.equals("_print")) { // System.out.println expr =
+		 * "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n" +
+		 * newTexts.get(ctx.args()) + "invokevirtual " +
+		 * symbolTable.getFunSpecStr("_print") + "\n"; } else
+		 */
+		expr = newTexts.get(ctx.expression()) + "invokestatic " + symbolTable.getclassname() + "/"
+				+ symbolTable.getFunSpecStr(fname) + "\n";
+
+		return expr;
+
+	}
+
+	private String handleFunCall(MiniJavaParser.ExpressionContext ctx, String expr) {
+		String fname = getFunName(ctx);
+
+		/*
+		 * if (fname.equals("_print")) { // System.out.println expr =
+		 * "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n" +
+		 * newTexts.get(ctx.args()) + "invokevirtual " +
+		 * symbolTable.getFunSpecStr("_print") + "\n"; } else
+		 */
+		if (ctx.getChildCount() == 5) {
+			expr = "invokestatic " + symbolTable.getclassname() + "/" + symbolTable.getFunSpecStr(fname) + "\n";
+		} else if (ctx.getChildCount() == 6) {
+			expr = newTexts.get(ctx.expression()) + "invokestatic " + symbolTable.getclassname() + "/"
+					+ symbolTable.getFunSpecStr(fname) + "\n";
+		}
+		return expr;
+
 	}
 
 	public void enterPrimaryExpression(MiniJavaParser.PrimaryExpressionContext ctx) {
 	}
 
-	/*:   '(' expression ')'
-    |   'this'
-    |   'null'
-    |   'false'
-    |   'true'
-    |   INTEGER
-    |   IDENTIFIER '(' ')'
-    |   IDENTIFIER '(' expressionList ')'
-    |   IDENTIFIER
-    ;*/
+	/*
+	 * : '(' expression ')' | 'this' | 'null' | 'false' | 'true' | INTEGER |
+	 * IDENTIFIER '(' ')' | IDENTIFIER '(' expressionList ')' | IDENTIFIER ;
+	 */
 	public void exitPrimaryExpression(MiniJavaParser.PrimaryExpressionContext ctx) {
 		String s = "";
-		
-		if(ctx.getChildCount() == 1) {
-			if(ctx.getChild(0).getText().equals("true")) {
+		String idName = ctx.IDENTIFIER().getText();
+
+		if (ctx.getChildCount() == 1) {
+			if (ctx.getChild(0).getText().equals("true")) {
 				s += "true";
-			} else if(ctx.getChild(0).getText().equals("false")) {
+			} else if (ctx.getChild(0).getText().equals("false")) {
 				s += "false";
-			} else if(ctx.getChild(0).getText().equals("null")) {
+			} else if (ctx.getChild(0).getText().equals("null")) {
 				s += "null";
-			} else if(ctx.getChild(0).getText().equals("this")) {
+			} else if (ctx.getChild(0).getText().equals("this")) {
 				s += "this";
-			} else if(ctx.INTEGER() != null) {
-				s += ctx.INTEGER();
+			} else if (ctx.INTEGER() != null) {
+				String literalStr = ctx.INTEGER().getText();
+				s += "ldc " + literalStr + " \n";
 			} else {
-				s += ctx.IDENTIFIER();
+				s += "iload_" + symbolTable.getVarId(idName) + " \n";
 			}
-		} else if(ctx.getChildCount() == 3) {
-			if(ctx.getChild(0).getText().equals("(")) {
-				s += "(" + ctx.expression() + ")";
+		} else if (ctx.getChildCount() == 3) {
+			if (ctx.getChild(0).getText().equals("(")) {
+				s += handleFunCall(ctx, s); // "(" + ctx.expression() + ")";
 			} else {
 				s += ctx.IDENTIFIER() + "( )";
 			}
 		} else {
-			s += ctx.IDENTIFIER() + "(" + ctx.expressionList() + ")";
+			s += handleFunCall(ctx, s);
+			// s += ctx.IDENTIFIER() + "(" + ctx.expressionList() + ")";
 		}
-		
+
 		newTexts.put(ctx, s);
 	}
 
 	public void enterExpressionList(MiniJavaParser.ExpressionListContext ctx) {
 	}
 
-	/*expressionList
-    :   expression (',' expression)*
-    ;*/
+	/*
+	 * expressionList : expression (',' expression)* ;
+	 */
 	public void exitExpressionList(MiniJavaParser.ExpressionListContext ctx) {
 		String s = "";
-		
-		if(ctx.getChildCount() >= 1) {
-			for(int i = 0; i < ctx.getChildCount(); i++) {
-				if(ctx.getChild(i).getText().equals(",")) {
+
+		if (ctx.getChildCount() >= 1) {
+			for (int i = 0; i < ctx.getChildCount(); i++) {
+				if (ctx.getChild(i).getText().equals(",")) {
 					continue;
 				}
-				
+
 				s += ctx.getChild(i).getText();
 			}
 		}
