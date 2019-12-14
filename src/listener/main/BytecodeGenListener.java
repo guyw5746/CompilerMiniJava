@@ -23,6 +23,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterTranslationUnit(MiniJavaParser.TranslationUnitContext ctx) {
 	}
 
+	/* translationUnit : classDeclaration **/
 	public void exitTranslationUnit(MiniJavaParser.TranslationUnitContext ctx) {
 		String classdeclaration = "";
 
@@ -38,6 +39,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx) {
 	}
 
+	/*
+	 * classDeclaration : 'class' IDENTIFIER '{' classMember* '}' ;
+	 */
 	public void exitClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx) {
 		String classProlog = getFunProlog();
 		String decl = "";
@@ -58,6 +62,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterClassMember(MiniJavaParser.ClassMemberContext ctx) {
 	}
 
+	/*
+	 * classMember : field | mainMethod | method ;
+	 */
 	public void exitClassMember(MiniJavaParser.ClassMemberContext ctx) {
 		String classmember = "";
 
@@ -79,6 +86,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterField(MiniJavaParser.FieldContext ctx) {
 	}
 
+	/*
+	 * field : 'public' type IDENTIFIER ';' ;
+	 */
 	public void exitField(MiniJavaParser.FieldContext ctx) {
 		String field = "";
 
@@ -89,12 +99,17 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		newTexts.put(ctx, field);
 	}
 
+	
 	public void enterMainMethod(MiniJavaParser.MainMethodContext ctx) {
 		symbolTable.initFunDecl();
 
 		symbolTable.putLocalVar("args", Type.INTARRAY);
 	}
-
+	
+	/*
+	 * mainMethod : 'public' 'static' 'void' 'main' '(' 'String' '[' ']' IDENTIFIER
+	 * ')' '{' blockStatement* '}' ;
+	 */
 	public void exitMainMethod(MiniJavaParser.MainMethodContext ctx) {
 		String main = "";
 		String fname = getFunName(ctx);
@@ -106,6 +121,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		newTexts.put(ctx, main);
 	}
 
+	
 	public void enterMethod(MiniJavaParser.MethodContext ctx) {
 		symbolTable.initFunDecl();
 
@@ -117,6 +133,10 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 	}
 
+	/*
+	 * method : 'public' type IDENTIFIER '(' ')' '{' blockStatement* '}' | 'public'
+	 * type IDENTIFIER '(' parameters ')' '{' blockStatement* '}' ;
+	 */
 	public void exitMethod(MiniJavaParser.MethodContext ctx) {
 		String fname = ctx.getChild(2).getText();
 		String s = "";
@@ -354,6 +374,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterBlockStatement(MiniJavaParser.BlockStatementContext ctx) {
 	}
 
+	/*
+	 * block : '{' blockStatement* '}' ;
+	 */
 	public void exitBlockStatement(MiniJavaParser.BlockStatementContext ctx) {
 		String block = "";
 
@@ -369,6 +392,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		
 		
 	}
+
 
 	public void enterLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx) {
 		if (isDeclWithInit(ctx)) {
@@ -388,6 +412,10 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		}
 	}
 
+	/*
+	 * localVariableDeclarationStatement : type IDENTIFIER ';' | type IDENTIFIER
+	 * ('=' expression) ';' ;
+	 */
 	public void exitLocalVariableDeclarationStatement(MiniJavaParser.LocalVariableDeclarationStatementContext ctx) {
 
 		String varDecl = "";
