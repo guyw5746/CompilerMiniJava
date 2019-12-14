@@ -1,4 +1,3 @@
-package generated;
 // Generated from MiniJava.g4 by ANTLR 4.4
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

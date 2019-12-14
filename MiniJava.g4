@@ -27,8 +27,10 @@ method
     |   'public' type IDENTIFIER '(' parameters ')' '{' blockStatement* '}'
     ;
 
+// 업데이트
 parameters
     :   parameter (',' parameter)*
+    |
     ;
 
 parameter
@@ -96,7 +98,6 @@ expression
     :   primaryExpression
     |   expression '.' IDENTIFIER '(' ')'
     |   expression '.' IDENTIFIER '(' expressionList ')'
-    |   expression '.' IDENTIFIER
     |   'new' IDENTIFIER '(' ')'
     |   ('-'|'!') expression
     |   expression ('*' | '/' | '%') expression

@@ -23,7 +23,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterTranslationUnit(MiniJavaParser.TranslationUnitContext ctx) {
 	}
 
-	/* translationUnit : classDeclaration **/
 	public void exitTranslationUnit(MiniJavaParser.TranslationUnitContext ctx) {
 		String classdeclaration = "";
 
@@ -37,11 +36,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void enterClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx) {
+		symbolTable.putclassname(ctx.getChild(1).getText());
 	}
 
-	/*
-	 * classDeclaration : 'class' IDENTIFIER '{' classMember* '}' ;
-	 */
 	public void exitClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx) {
 		String classProlog = getFunProlog();
 		String decl = "";
@@ -62,9 +59,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterClassMember(MiniJavaParser.ClassMemberContext ctx) {
 	}
 
-	/*
-	 * classMember : field | mainMethod | method ;
-	 */
 	public void exitClassMember(MiniJavaParser.ClassMemberContext ctx) {
 		String classmember = "";
 
@@ -86,9 +80,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	public void enterField(MiniJavaParser.FieldContext ctx) {
 	}
 
-	/*
-	 * field : 'public' type IDENTIFIER ';' ;
-	 */
 	public void exitField(MiniJavaParser.FieldContext ctx) {
 		String field = "";
 
@@ -99,17 +90,12 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		newTexts.put(ctx, field);
 	}
 
-	
 	public void enterMainMethod(MiniJavaParser.MainMethodContext ctx) {
 		symbolTable.initFunDecl();
 
 		symbolTable.putLocalVar("args", Type.INTARRAY);
 	}
-	
-	/*
-	 * mainMethod : 'public' 'static' 'void' 'main' '(' 'String' '[' ']' IDENTIFIER
-	 * ')' '{' blockStatement* '}' ;
-	 */
+
 	public void exitMainMethod(MiniJavaParser.MainMethodContext ctx) {
 		String main = "";
 		String fname = getFunName(ctx);
@@ -121,7 +107,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		newTexts.put(ctx, main);
 	}
 
-	
 	public void enterMethod(MiniJavaParser.MethodContext ctx) {
 		symbolTable.initFunDecl();
 
@@ -133,10 +118,6 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 
 	}
 
-	/*
-	 * method : 'public' type IDENTIFIER '(' ')' '{' blockStatement* '}' | 'public'
-	 * type IDENTIFIER '(' parameters ')' '{' blockStatement* '}' ;
-	 */
 	public void exitMethod(MiniJavaParser.MethodContext ctx) {
 		String fname = ctx.getChild(2).getText();
 		String s = "";
@@ -162,29 +143,59 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void enterParameters(MiniJavaParser.ParametersContext ctx) {
-		
+
 	}
 
+	// 생략
 	public void exitParameters(MiniJavaParser.ParametersContext ctx) {
 	}
 
 	public void enterParameter(MiniJavaParser.ParameterContext ctx) {
-		
+
 	}
 
+	// 생략
 	public void exitParameter(MiniJavaParser.ParameterContext ctx) {
 	}
 
 	public void enterType(MiniJavaParser.TypeContext ctx) {
 	}
 
+	// 생략
 	public void exitType(MiniJavaParser.TypeContext ctx) {
+
 	}
 
 	public void enterStatement(MiniJavaParser.StatementContext ctx) {
 	}
 
 	public void exitStatement(MiniJavaParser.StatementContext ctx) {
+
+		String stmt = "";
+		if (ctx.getChildCount() > 0) {
+			// block에서 처리한 것을 newTexts에 추가.
+			if (ctx.block() != null) // block
+				stmt += newTexts.get(ctx.block());
+			// printStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.printStatement() != null) // printStatement
+				stmt += newTexts.get(ctx.printStatement());
+			// ifStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.ifStatement() != null) // ifStatement
+				stmt += newTexts.get(ctx.ifStatement());
+			// whileStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.whileStatement() != null) // whileStatement
+				stmt += newTexts.get(ctx.whileStatement());
+			// emptyStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.emptyStatement() != null) // emptyStatement
+				stmt += newTexts.get(ctx.emptyStatement());
+			// expressionStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.expressionStatement() != null) // expressionStatement
+				stmt += newTexts.get(ctx.expressionStatement());
+			// returnStatement에서 처리한 것을 newTexts에 추가.
+			else if (ctx.returnStatement() != null) // returnStatement
+				stmt += newTexts.get(ctx.returnStatement());
+		}
+		newTexts.put(ctx, stmt);
 	}
 
 	public void enterBlock(MiniJavaParser.BlockContext ctx) {
@@ -217,8 +228,13 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void exitPrintStatement(MiniJavaParser.PrintStatementContext ctx) {
-	}
+		String print = "";
+		if (ctx.getChildCount() >= 8) {
+			print += symbolTable.getFunSpecStr("_print");
+		}
 
+		newTexts.put(ctx, print);
+	}
 	public void enterExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx) {
 	}
 

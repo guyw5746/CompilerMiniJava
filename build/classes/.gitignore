@@ -6,3 +6,6 @@
 /MiniJavaLexer.tokens
 /MiniJavaListener.java
 /MiniJavaParser.java
+/.gitignore
+/generated/
+/listener/
