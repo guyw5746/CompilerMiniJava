@@ -146,14 +146,14 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	private String funcHeader(MiniJavaParser.MainMethodContext ctx, String fname) {
-		return ".method public static " + symbolTable.getFunSpecStr(fname) + "\n" + "\t" + ".limit stack "
-				+ getStackSize(ctx) + "\n" + "\t" + ".limit locals " + getLocalVarSize(ctx) + "\n";
+		return ".method public static " + symbolTable.getFunSpecStr(fname) + "\n" + ".limit stack "
+				+ getStackSize(ctx) + "\n" + ".limit locals " + getLocalVarSize(ctx) + "\n";
 
 	}
 
 	private String funcHeader(MiniJavaParser.MethodContext ctx, String fname) {
-		return ".method public static " + symbolTable.getFunSpecStr(fname) + "\n" + "\t" + ".limit stack "
-				+ getStackSize(ctx) + "\n" + "\t" + ".limit locals " + getLocalVarSize(ctx) + "\n";
+		return ".method public static " + symbolTable.getFunSpecStr(fname) + "\n" + ".limit stack "
+				+ getStackSize(ctx) + "\n" + ".limit locals " + getLocalVarSize(ctx) + "\n";
 
 	}
 
