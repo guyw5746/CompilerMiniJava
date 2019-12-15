@@ -2,8 +2,9 @@ class Test {
 	public int temp (int x, int y){
 		if (x <= y) {
 			x = 4;
-		}
-		
+			x = 5;
+			x = 6;
+		}		
 		return x;
 	}	
 	

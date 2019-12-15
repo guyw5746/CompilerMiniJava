@@ -21,6 +21,10 @@ public class BytecodeGenListenerHelper {
 		return ctx.getChild(i) instanceof MiniJavaParser.BlockStatementContext;
 	}
 	
+	static boolean isblockstatement(MiniJavaParser.BlockContext ctx, int i) {
+		return ctx.getChild(i) instanceof MiniJavaParser.BlockStatementContext;
+	}
+	
 	static boolean isExpressionstatement(MiniJavaParser.ExpressionStatementContext ctx, int i) {
 		return ctx.getChild(0).getChild(i) instanceof MiniJavaParser.ExpressionContext;
 	}
@@ -102,7 +106,9 @@ public class BytecodeGenListenerHelper {
 	}
 	
 	static boolean noElse(IfStatementContext ctx) {
-		return ctx.getChildCount() < 5;
+		return ctx.getChildCount() < 6;
 	}
+	
+	
 
 }

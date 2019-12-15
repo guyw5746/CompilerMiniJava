@@ -218,6 +218,17 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void exitBlock(MiniJavaParser.BlockContext ctx) {
+		String block = "";
+		
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (isblockstatement(ctx, i)) {
+				block += newTexts.get(ctx.blockStatement(i));
+			}
+		}
+//		if (ctx.blockStatement() != null) // expressionStatement
+//			block += newTexts.get(ctx.getChild(1));
+		newTexts.put(ctx, block);
+		
 	}
 
 	public void enterIfStatement(MiniJavaParser.IfStatementContext ctx) {
@@ -232,11 +243,11 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String lelse = symbolTable.newLabel();
 
 		if (noElse(ctx)) {
-			stmt += condExpr + "ifeq " + lend + "\n" + thenStmt + "\n" + lend + ":" + "\n";
+			stmt += condExpr + "ifeq " + lend + "\n" + thenStmt + lend + ":";
 		} else {
 			String elseStmt = newTexts.get(ctx.statement(1));
-			stmt += condExpr + "ifeq " + lelse + "\n" + thenStmt + "\n" + "goto " + lend + "\n" + lelse + ": "
-					+ elseStmt + "\n" + lend + ":\n";
+			stmt += condExpr + "ifeq " + lelse + "\n" + thenStmt + "goto " + lend + "\n" + lelse + ": "
+					+ elseStmt + "\n" + lend + ":";
 		}
 
 		newTexts.put(ctx, stmt);
@@ -304,7 +315,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		expr += newTexts.get(ctx.expression(0));
 		switch (ctx.getChild(0).getText()) {
 		case "-":
-			expr += "           ineg \n";
+			expr += "ineg \n";
 			break;
 		case "--":
 			expr += "ldc 1" + "\n" + "isub" + "\n";
