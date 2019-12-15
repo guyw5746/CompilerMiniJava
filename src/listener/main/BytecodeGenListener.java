@@ -222,11 +222,9 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			if (isblockstatement(ctx, i)) {
-				block += newTexts.get(ctx.blockStatement(i));
+				block += newTexts.get(ctx.blockStatement(i-1));
 			}
 		}
-//		if (ctx.blockStatement() != null) // expressionStatement
-//			block += newTexts.get(ctx.getChild(1));
 		newTexts.put(ctx, block);
 		
 	}
