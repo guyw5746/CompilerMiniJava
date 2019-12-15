@@ -1,12 +1,14 @@
 class Test {
-	public int mul (int x, int y){
-		int z;
-		z = x * y;
-		return 3;
+	public int temp (int x, int y){
+		if (x <= y) {
+			x = 4;
+		}
+		
+		return x;
 	}	
 	
 	public static void main(String[] args){
-		int t = 33;
-		System.out.println(mul(1, t));
+		int t = 3;
+		System.out.println(temp(1, t));
 	}
 }

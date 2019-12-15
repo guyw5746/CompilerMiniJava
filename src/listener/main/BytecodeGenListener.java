@@ -224,14 +224,38 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 	}
 
 	public void exitIfStatement(MiniJavaParser.IfStatementContext ctx) {
-		// 구현
+		String stmt = "";
+		String condExpr = newTexts.get(ctx.expression());
+		String thenStmt = newTexts.get(ctx.statement(0));
+
+		String lend = symbolTable.newLabel();
+		String lelse = symbolTable.newLabel();
+
+		if (noElse(ctx)) {
+			stmt += condExpr + "ifeq " + lend + "\n" + thenStmt + "\n" + lend + ":" + "\n";
+		} else {
+			String elseStmt = newTexts.get(ctx.statement(1));
+			stmt += condExpr + "ifeq " + lelse + "\n" + thenStmt + "\n" + "goto " + lend + "\n" + lelse + ": "
+					+ elseStmt + "\n" + lend + ":\n";
+		}
+
+		newTexts.put(ctx, stmt);
 	}
 
 	public void enterWhileStatement(MiniJavaParser.WhileStatementContext ctx) {
 	}
 
 	public void exitWhileStatement(MiniJavaParser.WhileStatementContext ctx) {
-		// 구현
+		String loop = symbolTable.newLabel();
+		String stmt = "";
+
+		if (ctx.getChildCount() == 5) {
+			stmt += loop + ":\n" + newTexts.get(ctx.expression()) + "ifne " + loop;
+			// Loop:
+			// expr
+			// ifne Loop
+		}
+		newTexts.put(ctx, stmt);
 	}
 
 	public void enterEmptyStatement(MiniJavaParser.EmptyStatementContext ctx) {
@@ -321,36 +345,36 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 			break;
 
 		case "==":
-			expr += "isub " + "\n" + "ifeq " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "ifeq " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			break;
 		case "!=":
-			expr += "isub " + "\n" + "ifne " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "ifne " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			break;
 		// 작거나 같을 때 수행. 작거나 같을 때를 판별하는 ifle를 사용.
 		// ifle를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
 		case "<=":
-			expr += "isub " + "\n" + "ifle " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "ifle " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			break;
 		// 보다 작을 때 수행. 보다 작을 때를 판별하는 iflt를 사용.
 		// iflt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
 		case "<":
-			expr += "isub " + "\n" + "iflt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "iflt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			break;
 		// 크거나 같을 때 수행. 크거나 같을 때를 판별하는 ifge를 사용.
 		// ifge를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
 		case ">=":
-			expr += "isub " + "\n" + "ifge " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "ifge " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			// <(7) Fill here>
 			break;
 		// 보다 클 때 수행. 보다 클 때를 판별하는 ifgt를 사용.
 		// ifgt를 사용해서 맞으면 l2로 보낸다. 아니면 그대로 진행.
 		case ">":
-			expr += "isub " + "\n" + "ifgt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ": " + "ldc 1"
+			expr += "isub " + "\n" + "ifgt " + l2 + "\n" + "ldc 0" + "\n" + "goto " + lend + "\n" + l2 + ":\n" + "ldc 1"
 					+ "\n" + lend + ": " + "\n";
 			break;
 
@@ -375,11 +399,11 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String fname = ctx.getChild(1).getText();
 
 		if (symbolTable.getVarType(fname) == Type.INT) {
-			stmt += "ireturn" + "\n.end method\n";
+			stmt += "\nireturn" + "\n.end method\n";
 		} else if (fname instanceof String) {
 			stmt += "ldc " + fname + "\nireturn" + "\n.end method\n";
 		} else {
-			stmt += "return" + "\n.end method\n";
+			stmt += "\nreturn" + "\n.end method\n";
 		}
 
 		newTexts.put(ctx, stmt);

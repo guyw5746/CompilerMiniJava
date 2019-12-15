@@ -100,5 +100,9 @@ public class BytecodeGenListenerHelper {
 	static String getCurrentClassName(PrimaryExpressionContext ctx) {
 		return "Test";
 	}
+	
+	static boolean noElse(IfStatementContext ctx) {
+		return ctx.getChildCount() < 5;
+	}
 
 }
