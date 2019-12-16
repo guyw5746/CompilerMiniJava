@@ -6,6 +6,9 @@
 /MiniJavaLexer.tokens
 /MiniJavaListener.java
 /MiniJavaParser.java
+/.gitignore
+/generated/
+/listener/
 /MiniJavaBaseListener.class
 /MiniJavaLexer.class
 /MiniJavaListener.class
@@ -32,5 +35,3 @@
 /MiniJavaParser$TypeContext.class
 /MiniJavaParser$WhileStatementContext.class
 /MiniJavaParser.class
-/generated/
-/listener/
