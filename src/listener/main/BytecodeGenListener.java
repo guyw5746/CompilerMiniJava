@@ -280,7 +280,7 @@ public class BytecodeGenListener extends MiniJavaBaseListener implements ParseTr
 		String print = "";
 
 		print += "getstatic java/lang/System/out Ljava/io/PrintStream; " + "\n"
-				+ newTexts.get(ctx.expression().primaryExpression().expressionList());
+				+ newTexts.get(ctx.expression().primaryExpression().expressionList()) + newTexts.get(ctx.expression().primaryExpression());
 
 		if (ctx.getChildCount() >= 8) {
 			print += "invokevirtual " + symbolTable.getFunSpecStr("_print") + "\n";
