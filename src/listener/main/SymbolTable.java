@@ -19,6 +19,7 @@ public class SymbolTable {
 		INT, INTARRAY, VOID, ERROR
 	}
 	
+	// 지역 변수 정보.
 	static public class VarInfo {
 		Type type; 
 		int id;
@@ -36,6 +37,7 @@ public class SymbolTable {
 		}
 	}
 	
+	// 함수 정보.
 	static public class FInfo {
 		public String sigStr;
 	}
@@ -43,7 +45,7 @@ public class SymbolTable {
 	private Map<String, VarInfo> _lsymtable = new HashMap<>();	// local v.
 	private Map<String, VarInfo> _gsymtable = new HashMap<>();	// global v.
 	private Map<String, FInfo> _fsymtable = new HashMap<>();	// function 
-	private String classname;	
+	private String classname;	// class
 		
 	private int _globalVarID = 0;
 	private int _localVarID = 0;
@@ -55,20 +57,23 @@ public class SymbolTable {
 		initFunTable();
 	}
 	
-	void initFunDecl(){		// at each func decl
+	void initFunDecl(){
 		_localVarID = 0;
 		_labelID = 0;
 		_tempVarID = 32;
 		//_lsymtable = new HashMap<>();
 	}
 	
+	// class 이름 put
 	void putclassname(String classname) {
 		this.classname = classname;
 	}
 	
+	// class 이름 가져옴
 	String getclassname() {
 		return classname;
 	}
+	
 	// 지역 변수 이름을 키 값으로 하고 
 	// 타입과 스택에 저장할 장소를 나타내는 _localVarID를 묶어서  _lsymtable에 넣는 메소드.
 	void putLocalVar(String varname, Type type){
@@ -83,17 +88,15 @@ public class SymbolTable {
 		VarInfo globalvarinfo = new VarInfo(type, _globalVarID);
 		_globalVarID++;
 		_gsymtable.put(varname, globalvarinfo);
-		//<Fill here>
 	}
+	
 	// 지역 변수 선언할 때 초기화까지 같이 했을 때 수행되는 메소드.
 	// 마찬가지로 지역 변수 이름을 키 값으로 하고
 	// 타입과 스택에 저장할 장소를 나타내는 _localVarID를 묶어서  _lsymtable에 넣는 메소드.
 	void putLocalVarWithInitVal(String varname, Type type, int initVar){
-		
 		VarInfo localvarinfo = new VarInfo(type, _localVarID, initVar);
 		_localVarID++;
 		_lsymtable.put(varname, localvarinfo);
-		//<Fill here>
 	}
 	
 	// 전역 변수 선언할 때 초기화까지 같이 했을 때 수행되는 메소드.
@@ -123,6 +126,7 @@ public class SymbolTable {
 		}
 	}
 	
+	// print와 main 함수는 미리 넣어둔다.
 	private void initFunTable() {
 		FInfo printlninfo = new FInfo();
 		printlninfo.sigStr = "java/io/PrintStream/println()V";
@@ -139,7 +143,6 @@ public class SymbolTable {
 		FInfo value = _fsymtable.get(fname);
 		String s = "";
 		s = value.sigStr;
-		// <Fill here>
 		return s;
 	}
 
@@ -147,9 +150,9 @@ public class SymbolTable {
 	// fname + "(" + param + ")" 형태 이므로 첫번째 것을 가져와서 반환.
 	public String getFunSpecStr(MethodContext ctx) {	
 		return ctx.getChild(0).getText();
-		// <Fill here>
 	}
 	
+	// main함수 형태를 가져와서 jvm 함수 형태로 저장하는 함수.
 	public String putFunSpecStr(MainMethodContext ctx) {
 		String fname = getFunName(ctx);
 		String argtype = "";	
@@ -241,6 +244,7 @@ public class SymbolTable {
 		return "";	
 	}
 	
+	// 변수 타입을 가져온다.
 	Type getVarType(String name){
 		VarInfo lvar = (VarInfo) _lsymtable.get(name);
 		if (lvar != null) {
@@ -254,6 +258,8 @@ public class SymbolTable {
 		
 		return Type.ERROR;	
 	}
+	
+	// label 처리.
 	String newLabel() {
 		return "label" + _labelID++;
 	}
